@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Login from './components/Auth/Login'
 import EmployeeDashboard from './components/Dashboards/EmployeeDashboard'
 import AdminDashboard from './components/Dashboards/AdminDashboard'
 import { getLocalStorage, setLocalStorage } from './utils/localStorage'
 import { useState } from 'react';
+import { AuthContext } from './context/AuthProvider'
 
 const App = () => {
 
@@ -11,23 +12,32 @@ const App = () => {
       setLocalStorage()
       getLocalStorage()
     
-    },)
+    }, [])
 
 
     const [user, setUser] = useState(null)
 
     const handleLogin = (email, password) =>{
-      console.log(email, password)
+      // console.log(email, password)
+      if(email == "admin@me.com" && password == "123"){
+        setUser('admin')
+      }else if(email == "user@me.com" && password == "123"){
+        setUser('employee')
+      }else{
+        alert("Invalid Credentials")
+      }
+
     }
 
-    handleLogin()
+    const data = useContext(AuthContext)
+    console.log(data)
 
   return (
 
     <>
-      {!user ?  <Login /> : ''}
-      {/* <EmployeeDashboard /> */}
-      {/* <AdminDashboard /> */}
+      {!user ?  <Login handleLogin={handleLogin} /> : ''}
+
+      {user == 'admin' ? <AdminDashboard /> : <EmployeeDashboard />}
     
     </>
       
